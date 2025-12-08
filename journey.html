@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>План путешествия по Тунису - TunWars: Episode I</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+        
+        .day-gradient-1 { background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); }
+        .day-gradient-2 { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .day-gradient-3 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .day-gradient-4 { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .day-gradient-5 { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+        .day-gradient-6 { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+        .day-gradient-7 { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+        .day-gradient-8 { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        @media (max-width: 768px) {
+            .parallax-bg {
+                background-attachment: scroll;
+            }
+            
+            .day-section {
+                padding-left: 1.5rem;
+            }
+        }
+        
+        .location-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .location-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .star-wars-glow {
+            text-shadow: 0 0 10px #FFE81F, 0 0 20px #FFE81F, 0 0 30px #FFE81F;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .stats-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .day-section {
+            scroll-margin-top: 80px;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 25px;
+            }
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 4px solid white;
+            transform: translateX(-50%);
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .timeline-dot {
+                left: 25px;
+                width: 16px;
+                height: 16px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .day-section {
+                padding-left: 2rem;
+            }
+        }
+        
+        .location-link {
+            color: #2563eb;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+        
+        .location-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                padding: 0.75rem;
+            }
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            .hero-gradient h1 {
+                font-size: 2.5rem;
+            }
+            
+            .day-section .p-8 {
+                padding: 1rem;
+            }
+            
+            .day-section .text-3xl {
+                font-size: 1.5rem;
+            }
+            
+            .day-section .text-4xl {
+                font-size: 2rem;
+            }
+            
+            .day-section .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .day-section ul {
+                padding-left: 0.5rem;
+            }
+            
+            .day-section .space-y-3 > * {
+                margin-bottom: 0.75rem;
+            }
+            
+            .nav-link {
+                font-size: 0.875rem;
+            }
+            
+            nav .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .hero-gradient {
+                padding-top: 6rem;
+                padding-bottom: 3rem;
+            }
+            
+            .hero-gradient h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-gradient p {
+                font-size: 1rem;
+            }
+            
+            .stats-card {
+                padding: 0.75rem;
+            }
+            
+            .stats-card .text-4xl {
+                font-size: 1.75rem;
+            }
+            
+            .day-section {
+                margin-bottom: 2rem;
+            }
+            
+            .day-section .mb-32 {
+                margin-bottom: 2rem;
+            }
+            
+            .day-section .p-8 {
+                padding: 0.75rem;
+            }
+            
+            .day-section .p-12 {
+                padding: 1rem;
+            }
+            
+            .back-to-top {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 hero-gradient shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="text-white font-bold text-xl flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    TunWars
+                </a>
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html" class="nav-link text-white text-sm">Карта</a>
+                    <a href="route.html" class="nav-link text-white text-sm">Маршрут</a>
+                    <a href="journey.html" class="nav-link text-white text-sm">План</a>
+                    <a href="#stats" class="nav-link text-white text-sm">Статистика</a>
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-white">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="hero" class="hero-gradient text-white pt-24 pb-20 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==');"></div>
+        </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center fade-in">
+                <h1 class="text-5xl md:text-7xl font-black mb-4">
+                    TunWars
+                    <span class="block text-3xl md:text-5xl mt-2">Episode I: Тунисская угроза</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 opacity-90">
+                    9 дней • 2603 км • 38 локаций
+                </p>
+                <p class="text-lg md:text-xl mb-10 max-w-3xl mx-auto">
+                    Вся Сахара, всё побережье, все звёздные войны в одном идеальном маршруте!
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#day-1" class="bg-white text-purple-600 px-8 py-3 rounded-full font-bold hover:bg-purple-50 transition-all shadow-lg">
+                        Начать план
+                    </a>
+                    <a href="route.html" class="bg-purple-700 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-800 transition-all shadow-lg border-2 border-white border-opacity-30">
+                        <i class="fas fa-route mr-2"></i>Маршрут
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section id="stats" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="text-center fade-in">
+                    <div class="text-4xl md:text-5xl font-black text-purple-600 mb-2">9</div>
+                    <div class="text-gray-600 font-medium">Дней путешествия</div>
+                </div>
+                <div class="text-center fade-in">
+                    <div class="text-4xl md:text-5xl font-black text-purple-600 mb-2">2603</div>
+                    <div class="text-gray-600 font-medium">Километров</div>
+                </div>
+                <div class="text-center fade-in">
+                    <div class="text-4xl md:text-5xl font-black text-purple-600 mb-2">38</div>
+                    <div class="text-gray-600 font-medium">Уникальных локаций</div>
+                </div>
+                <div class="text-center fade-in">
+                    <div class="text-4xl md:text-5xl font-black text-purple-600 mb-2">15</div>
+                    <div class="text-gray-600 font-medium">Звёздных войн 🎬</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Days Timeline -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl md:text-5xl font-black text-center mb-16 text-gray-800">
+                План путешествия
+            </h2>
+            
+            <!-- Day 1 -->
+            <div id="day-1" class="day-section mb-32 relative">
+                <div class="timeline-dot day-gradient-1"></div>
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden day-gradient-1">
+                        <div class="p-8 md:p-12 text-white">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <span class="text-sm opacity-80">12 декабря 2025</span>
+                                    <h3 class="text-3xl md:text-4xl font-black mt-2">День 1: Столица Туниса</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold">4</div>
+                                    <div class="text-sm opacity-80">локации</div>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                                <div><i class="fas fa-route mr-2"></i>46 км</div>
+                                <div><i class="fas fa-clock mr-2"></i>1ч 20м в пути</div>
+                                <div><i class="fas fa-bed mr-2"></i>Hotel Dar Nejma, Тунис</div>
+                            </div>
+                        </div>
+                        <div class="p-8 md:p-12 bg-white">
+                            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Локации дня:</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-map-marker-alt text-purple-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Медина Туниса</div>
+                                                <div class="text-sm text-gray-600">Узкие улочки, базары, атмосфера древности</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-map-marker-alt text-purple-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Музей Бардо</div>
+                                                <div class="text-sm text-gray-600">Лучший музей Африки! Мозаики, артефакты</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-map-marker-alt text-purple-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Карфаген</div>
+                                                <div class="text-sm text-gray-600">Древние финикийские руины</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-map-marker-alt text-purple-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Сиди-Бу-Саид</div>
+                                                <div class="text-sm text-gray-600">Голубой город, потрясающий закат! ⭐</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Расписание:</h4>
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">12:00</span>
+                                            <span class="text-gray-700">Прибытие в аэропорт, аренда машины</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">14:00</span>
+                                            <span class="text-gray-700">Медина Туниса (1ч 45м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">15:45</span>
+                                            <span class="text-gray-700">Музей Бардо (1ч 30м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">17:35</span>
+                                            <span class="text-gray-700">Карфаген (40м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">18:35</span>
+                                            <span class="text-gray-700">Сиди-Бу-Саид - закат! ⭐</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-purple-50 p-6 rounded-xl border-l-4 border-purple-600">
+                                <p class="text-gray-700"><strong>Совет дня:</strong> Легкий день адаптации. Не торопитесь, наслаждайтесь атмосферой столицы!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day 2 -->
+            <div id="day-2" class="day-section mb-32 relative">
+                <div class="timeline-dot day-gradient-2"></div>
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden day-gradient-2">
+                        <div class="p-8 md:p-12 text-white">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <span class="text-sm opacity-80">13 декабря 2025</span>
+                                    <h3 class="text-3xl md:text-4xl font-black mt-2">День 2: Озеро Ичкюль и Север</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold">4</div>
+                                    <div class="text-sm opacity-80">локации</div>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                                <div><i class="fas fa-route mr-2"></i>407 км</div>
+                                <div><i class="fas fa-clock mr-2"></i>5ч 20м в пути</div>
+                                <div><i class="fas fa-bed mr-2"></i>Dar Loubna, Табурсук</div>
+                            </div>
+                        </div>
+                        <div class="p-8 md:p-12 bg-white">
+                            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Локации дня:</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-water text-green-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Озеро Ичкюль (ЮНЕСКО)</div>
+                                                <div class="text-sm text-gray-600">Биосфера, птицы! БИНОКЛЬ обязателен!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-ship text-green-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Бизерта</div>
+                                                <div class="text-sm text-gray-600">Портовой город, Медина, рыбный базар</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-mountain text-green-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Табарка</div>
+                                                <div class="text-sm text-gray-600">Красные скалы, генуэзская крепость</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Расписание:</h4>
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-green-600 w-20">08:00</span>
+                                            <span class="text-gray-700">Выезд из Туниса</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-green-600 w-20">09:50</span>
+                                            <span class="text-gray-700">Озеро Ичкюль (1ч) - БИНОКЛЬ!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-green-600 w-20">11:20</span>
+                                            <span class="text-gray-700">Бизерта (1ч 10м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-green-600 w-20">13:00</span>
+                                            <span class="text-gray-700">Табарка (30м) + обед</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-green-600 w-20">14:30</span>
+                                            <span class="text-gray-700">Переезд в Табурсук (3ч)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-green-50 p-6 rounded-xl border-l-4 border-green-600">
+                                <p class="text-gray-700"><strong>Особенность:</strong> Озеро лучше посещать утром (6-9 часов) - больше птиц, хороший свет для фото!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day 3 -->
+            <div id="day-3" class="day-section mb-32 relative">
+                <div class="timeline-dot day-gradient-3"></div>
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden day-gradient-3">
+                        <div class="p-8 md:p-12 text-white">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <span class="text-sm opacity-80">14 декабря 2025</span>
+                                    <h3 class="text-3xl md:text-4xl font-black mt-2">День 3: Спуск в Сахару</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold">2</div>
+                                    <div class="text-sm opacity-80">локации</div>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                                <div><i class="fas fa-route mr-2"></i>480 км</div>
+                                <div><i class="fas fa-clock mr-2"></i>6ч 25м в пути</div>
+                                <div><i class="fas fa-bed mr-2"></i>Hotel Sunrise, Таузар</div>
+                            </div>
+                        </div>
+                        <div class="p-8 md:p-12 bg-white">
+                            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Локации дня:</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-monument text-orange-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Дугга (ЮНЕСКО) ⭐⭐⭐⭐⭐</div>
+                                                <div class="text-sm text-gray-600">ЛУЧШИЙ РИМСКИЙ ГОРОД АФРИКИ! Капитолий, театр, форум</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-fort text-orange-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Эль-Кеф</div>
+                                                <div class="text-sm text-gray-600">Цитадель на холме ⭐⭐⭐⭐</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Расписание:</h4>
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-orange-600 w-20">08:00</span>
+                                            <span class="text-gray-700">⚠️ ВЫЕЗД ОБЯЗАТЕЛЕН! СПУСК В САХАРУ!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-orange-600 w-20">09:50</span>
+                                            <span class="text-gray-700">Дугга (1ч 35м) - НАНИМАЙТЕ ГАЙДА!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-orange-600 w-20">12:15</span>
+                                            <span class="text-gray-700">Эль-Кеф (45м) + обед</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-orange-600 w-20">13:00</span>
+                                            <span class="text-gray-700">Большой переезд в пустыню (5ч!)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-orange-600 w-20">22:00</span>
+                                            <span class="text-gray-700">🌟 ЗВЁЗДЫ НОЧЬЮ В ПУСТЫНЕ!</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-orange-50 p-6 rounded-xl border-l-4 border-orange-600">
+                                <p class="text-gray-700"><strong>⚠️ Важно:</strong> Длинный день! Выезжайте в 08:00 не позже. Млечный путь видно невооружённым глазом!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day 4 - Star Wars Day -->
+            <div id="day-4" class="day-section mb-32 relative">
+                <div class="timeline-dot day-gradient-4"></div>
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden day-gradient-4">
+                        <div class="p-8 md:p-12 text-white relative">
+                            <div class="absolute top-4 right-4">
+                                <span class="star-wars-glow text-yellow-300 text-xl font-bold">🎬🎬🎬 ЗВЁЗДНЫЕ ВОЙНЫ 🎬🎬🎬</span>
+                            </div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <span class="text-sm opacity-80">15 декабря 2025</span>
+                                    <h3 class="text-3xl md:text-4xl font-black mt-2">День 4: Звёздные войны - Лучший день! ⭐</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold">7</div>
+                                    <div class="text-sm opacity-80">локаций</div>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                                <div><i class="fas fa-route mr-2"></i>350 км</div>
+                                <div><i class="fas fa-clock mr-2"></i>4ч 30м в пути</div>
+                                <div><i class="fas fa-bed mr-2"></i>Hotel Sidi Driss, Матмата</div>
+                            </div>
+                        </div>
+                        <div class="p-8 md:p-12 bg-white">
+                            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">🎬 Локации звёздных войн:</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-jedi text-red-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Дом Ларсов 🎬</div>
+                                                <div class="text-sm text-gray-600">ДОМ ЛЮКА СКАЙУОКЕРА! ⭐⭐⭐⭐⭐</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-jedi text-red-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Онг Джемель</div>
+                                                <div class="text-sm text-gray-600">МОС-ЭСПА из Эпизода I! ⭐⭐⭐⭐⭐</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-jedi text-red-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Каньон Сиди Бухлель</div>
+                                                <div class="text-sm text-gray-600">Источники воды в пустыне ⭐⭐⭐⭐</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-jedi text-red-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Матмата</div>
+                                                <div class="text-sm text-gray-600">Подземные дома берберов! ⭐⭐⭐⭐⭐</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-water text-red-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Озеро Шотт-эль-Джерид</div>
+                                                <div class="text-sm text-gray-600">Соленое озеро! Белоснежная соль! ⭐⭐⭐⭐⭐</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-tree text-red-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Нефта</div>
+                                                <div class="text-sm text-gray-600">Красивейший оазис! ⭐⭐⭐⭐</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-tree text-red-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Оазисы (Мидес/Тамерза/Шебика)</div>
+                                                <div class="text-sm text-gray-600">Финиковые пальмы, закат ⭐⭐⭐⭐</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Расписание:</h4>
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-red-600 w-20">08:00</span>
+                                            <span class="text-gray-700">Озеро Шотт (45м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-red-600 w-20">09:35</span>
+                                            <span class="text-gray-700">Нефта (55м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-red-600 w-20">11:15</span>
+                                            <span class="text-gray-700">🎬 Дом Ларсов (1ч 15м) - ДОМ ЛЮКА!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-red-600 w-20">13:20</span>
+                                            <span class="text-gray-700">🎬 Онг Джемель - Мос-Эспа!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-red-600 w-20">15:20</span>
+                                            <span class="text-gray-700">Каньон Сиди Бухлель</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-red-600 w-20">17:00</span>
+                                            <span class="text-gray-700">Оазисы (Мидес/Тамерза/Шебика)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-red-600 w-20">19:30</span>
+                                            <span class="text-gray-700">Матмата - подземные дома!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-red-600 w-20">22:00</span>
+                                            <span class="text-gray-700">🌟 ЗВЁЗДЫ В ПУСТЫНЕ! Млечный путь!</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-red-50 p-6 rounded-xl border-l-4 border-red-600">
+                                <p class="text-gray-700"><strong>⭐ САМЫЙ ИНТЕРЕСНЫЙ И ВОЛШЕБНЫЙ ДЕНЬ!</strong> Ночевка в легендарном подземном доме - это часть опыта!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day 5 -->
+            <div id="day-5" class="day-section mb-32 relative">
+                <div class="timeline-dot day-gradient-5"></div>
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden day-gradient-5">
+                        <div class="p-8 md:p-12 text-white relative">
+                            <div class="absolute top-4 right-4">
+                                <span class="text-yellow-300 text-lg font-bold">🎬 ЗВЁЗДНЫЕ ВОЙНЫ 🎬</span>
+                            </div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <span class="text-sm opacity-80">16 декабря 2025</span>
+                                    <h3 class="text-3xl md:text-4xl font-black mt-2">День 5: Ксары, Дуз и Фум-Татавин 🎬</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold">5</div>
+                                    <div class="text-sm opacity-80">локаций</div>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                                <div><i class="fas fa-route mr-2"></i>320 км</div>
+                                <div><i class="fas fa-clock mr-2"></i>4ч 15м в пути</div>
+                                <div><i class="fas fa-bed mr-2"></i>Hotel Djerba Plaza, Джерба</div>
+                            </div>
+                        </div>
+                        <div class="p-8 md:p-12 bg-white">
+                            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">🎬 Локации дня:</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-fort text-purple-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Ксары 🎬</div>
+                                                <div class="text-sm text-gray-600">Крепости-зернохранилища (Хаддада, Улед Султан, Халлуф)</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-mountain text-purple-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Шенини 🎬</div>
+                                                <div class="text-sm text-gray-600">Скальное поселение на скалах!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-mountain text-purple-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Дуирет 🎬</div>
+                                                <div class="text-sm text-gray-600">Скальное поселение</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-door-open text-purple-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Дуз 🎬</div>
+                                                <div class="text-sm text-gray-600">ВОРОТА САХАРЫ! Закат над пустыней!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-city text-purple-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Фум-Татавин 🎬</div>
+                                                <div class="text-sm text-gray-600">Административный центр Юга</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Расписание:</h4>
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">08:00</span>
+                                            <span class="text-gray-700">Выезд из Матматы</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">08:35</span>
+                                            <span class="text-gray-700">🎬 Ксары (1ч 25м) - крепости!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">10:30</span>
+                                            <span class="text-gray-700">🎬 Шенини (1ч 05м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">12:05</span>
+                                            <span class="text-gray-700">🎬 Дуирет (55м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">13:45</span>
+                                            <span class="text-gray-700">Переезд в Дуз (1ч)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">14:45</span>
+                                            <span class="text-gray-700">🎬 Дуз - ВОРОТА САХАРЫ! Закат!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">16:45</span>
+                                            <span class="text-gray-700">🎬 Фум-Татавин</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-purple-600 w-20">17:30</span>
+                                            <span class="text-gray-700">Переезд в Джербу (1ч 15м)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-purple-50 p-6 rounded-xl border-l-4 border-purple-600">
+                                <p class="text-gray-700"><strong>Ночевка:</strong> Hotel Djerba Plaza, Джерба (100€) - ЛЮКС! 5 звёзд! 🎬 Звёздные войны: 6 мест!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day 6 -->
+            <div id="day-6" class="day-section mb-32 relative">
+                <div class="timeline-dot day-gradient-6"></div>
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden day-gradient-6">
+                        <div class="p-8 md:p-12 text-white">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <span class="text-sm opacity-80">17 декабря 2025</span>
+                                    <h3 class="text-3xl md:text-4xl font-black mt-2">День 6: Насыщенный день ✅ 5 ЛОКАЦИЙ!</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold">5</div>
+                                    <div class="text-sm opacity-80">локаций</div>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                                <div><i class="fas fa-route mr-2"></i>330 км</div>
+                                <div><i class="fas fa-clock mr-2"></i>6ч 35м в пути</div>
+                                <div><i class="fas fa-bed mr-2"></i>Dar Mahdia, Махдия</div>
+                            </div>
+                        </div>
+                        <div class="p-8 md:p-12 bg-white">
+                            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Локации дня:</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-star-of-david text-pink-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Синагога Эль-Гриба ⭐⭐⭐⭐⭐</div>
+                                                <div class="text-sm text-gray-600">ДРЕВНЕЙШАЯ! 1400+ лет! 🎬</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-island-tropical text-pink-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Джерба - Хумт-Сук 🎬</div>
+                                                <div class="text-sm text-gray-600">Остров Энея! Обед на базаре!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-water text-pink-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Габес</div>
+                                                <div class="text-sm text-gray-600">Морской оазис! Уникальное явление!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-theater-masks text-pink-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">ЭЛЬ-ДЖЕМ ⭐⭐⭐⭐⭐ 🎬</div>
+                                                <div class="text-sm text-gray-600">АМФИТЕАТР - 3-й В МИРЕ! Золотой час!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-fort text-pink-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Махдия ⭐⭐⭐⭐</div>
+                                                <div class="text-sm text-gray-600">Крепость на мысе, вечерний обзор</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Расписание:</h4>
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-pink-600 w-20">08:30</span>
+                                            <span class="text-gray-700">Синагога Эль-Гриба (45м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-pink-600 w-20">09:50</span>
+                                            <span class="text-gray-700">Джерба + обед на базаре (1ч)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-pink-600 w-20">11:45</span>
+                                            <span class="text-gray-700">Габес - морской оазис (1ч)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-pink-600 w-20">14:30</span>
+                                            <span class="text-gray-700">🏛️ ЭЛЬ-ДЖЕМ! (1ч 10м) - закат!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-pink-600 w-20">16:50</span>
+                                            <span class="text-gray-700">Махдия - крепость (1ч)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-pink-50 p-6 rounded-xl border-l-4 border-pink-600">
+                                <p class="text-gray-700"><strong>✅ НАСЫЩЕННЫЙ ДЕНЬ!</strong> 5 локаций + ночлег в Махдии! Ночевка: Dar Mahdia, Махдия (60-80€) - на берегу моря</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day 7 -->
+            <div id="day-7" class="day-section mb-32 relative">
+                <div class="timeline-dot day-gradient-7"></div>
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden day-gradient-7">
+                        <div class="p-8 md:p-12 text-white">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <span class="text-sm opacity-80">18 декабря 2025</span>
+                                    <h3 class="text-3xl md:text-4xl font-black mt-2">День 7: Финальный день ✅ 3 ЛОКАЦИИ!</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold">3</div>
+                                    <div class="text-sm opacity-80">локации</div>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                                <div><i class="fas fa-route mr-2"></i>410 км</div>
+                                <div><i class="fas fa-clock mr-2"></i>6ч 10м в пути</div>
+                                <div><i class="fas fa-bed mr-2"></i>Sousses Palace, Сусс</div>
+                            </div>
+                        </div>
+                        <div class="p-8 md:p-12 bg-white">
+                            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Локации дня:</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-fort text-cyan-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Махдия ⭐⭐⭐⭐</div>
+                                                <div class="text-sm text-gray-600">Крепость Бордж Эль-Кебла - ПОЛНЫЙ ОСМОТР УТРОМ!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-mosque text-cyan-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Кайруан ⭐⭐⭐⭐⭐</div>
+                                                <div class="text-sm text-gray-600">ВЕЛИКАЯ МЕЧЕТЬ - 4-й СВЯТОЙ ГОРОД ИСЛАМА!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-monument text-cyan-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Загуан ✅</div>
+                                                <div class="text-sm text-gray-600">ХРАМ И АКВЕДУК - ПОСЛЕДНЯЯ ЛОКАЦИЯ!</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Расписание:</h4>
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-cyan-600 w-20">08:00</span>
+                                            <span class="text-gray-700">Махдия - полный осмотр утром (1ч)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-cyan-600 w-20">10:30</span>
+                                            <span class="text-gray-700">🕌 Кайруан (1ч 30м) - 4-й святой город!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-cyan-600 w-20">12:00</span>
+                                            <span class="text-gray-700">Обед в Медине Кайруана</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-cyan-600 w-20">15:05</span>
+                                            <span class="text-gray-700">✅ Загуан - ПОСЛЕДНЯЯ ЛОКАЦИЯ! (45м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-cyan-600 w-20">16:00</span>
+                                            <span class="text-gray-700">Переезд в Сусс (2ч 50м)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-cyan-50 p-6 rounded-xl border-l-4 border-cyan-600">
+                                <p class="text-gray-700"><strong>✅ ФИНАЛЬНЫЙ ДЕНЬ!</strong> Махдия утром + Кайруан + Загуан! Ночевка: Sousses Palace, Сусс (100€) - ЛЮКС! 5 звёзд!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Day 8 -->
+            <div id="day-8" class="day-section mb-32 relative">
+                <div class="timeline-dot day-gradient-8"></div>
+                <div class="max-w-6xl mx-auto">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden day-gradient-8">
+                        <div class="p-8 md:p-12 text-white">
+                            <div class="flex items-center justify-between mb-6">
+                                <div>
+                                    <span class="text-sm opacity-80">19 декабря 2025</span>
+                                    <h3 class="text-3xl md:text-4xl font-black mt-2">День 8: Побережье и финал</h3>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-2xl font-bold">4</div>
+                                    <div class="text-sm opacity-80">локации</div>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-3 gap-4 text-sm">
+                                <div><i class="fas fa-route mr-2"></i>240 км</div>
+                                <div><i class="fas fa-clock mr-2"></i>4ч 10м в пути</div>
+                                <div><i class="fas fa-bed mr-2"></i>Hotel Dar Nejma, Тунис</div>
+                            </div>
+                        </div>
+                        <div class="p-8 md:p-12 bg-white">
+                            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Локации дня:</h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-umbrella-beach text-teal-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Хаммамет ⭐⭐⭐⭐</div>
+                                                <div class="text-sm text-gray-600">Курортный город</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-palette text-teal-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Набёль ⭐⭐⭐⭐</div>
+                                                <div class="text-sm text-gray-600">Город керамики! Купите сувениры здесь!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-fort text-teal-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Келибия ⭐⭐⭐⭐</div>
+                                                <div class="text-sm text-gray-600">Крепость на скале над морем! Вид 360°!</div>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-monument text-teal-600 mr-3 mt-1"></i>
+                                            <div>
+                                                <div class="font-bold text-gray-800">Керкуан ✅</div>
+                                                <div class="text-sm text-gray-600">Пунический город - ПОСЛЕДНЯЯ ЛОКАЦИЯ!</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="text-xl font-bold mb-4 text-gray-800">Расписание:</h4>
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-teal-600 w-20">08:00</span>
+                                            <span class="text-gray-700">Выезд из Сусса</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-teal-600 w-20">10:25</span>
+                                            <span class="text-gray-700">Хаммамет (45м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-teal-600 w-20">11:30</span>
+                                            <span class="text-gray-700">Набёль - керамика! (1ч) - СУВЕНИРЫ!</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-teal-600 w-20">13:00</span>
+                                            <span class="text-gray-700">Келибия - крепость (50м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-teal-600 w-20">14:10</span>
+                                            <span class="text-gray-700">✅ Керкуан - ПОСЛЕДНЯЯ ЛОКАЦИЯ! (50м)</span>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <span class="font-bold text-teal-600 w-20">15:00</span>
+                                            <span class="text-gray-700">Возврат в Тунис (1ч 10м)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-teal-50 p-6 rounded-xl border-l-4 border-teal-600">
+                                <p class="text-gray-700"><strong>Финал путешествия!</strong> Возвращаемся в первый отель! Hotel Dar Nejma, Тунис (60-80€). Набёль - купите сувениры здесь! Керкуан - часто забывают туристы, редко людей!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Call to Action -->
+            <section class="py-20 hero-gradient text-white text-center">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-4xl md:text-5xl font-black mb-6">
+                        Готовы к приключению?
+                    </h2>
+                    <p class="text-xl mb-10 opacity-90 max-w-2xl mx-auto">
+                        Исследуйте Тунис во всей его красе: от древних руин до локаций Звёздных войн!
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                                <a href="route.html" class="bg-white text-purple-600 px-8 py-3 rounded-full font-bold hover:bg-purple-50 transition-all shadow-lg">
+                            <i class="fas fa-map-marked-alt mr-2"></i>Маршрут
+                        </a>
+                        <a href="index.html" class="bg-purple-700 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-800 transition-all shadow-lg border-2 border-white border-opacity-30">
+                            <i class="fas fa-list mr-2"></i>Все локации
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="timeline-line"></div>
+    </section>
+    
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top bg-purple-600 text-white p-4 rounded-full shadow-lg hover:bg-purple-700 transition-all">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <!-- Locations Data -->
+    <script src="./%D0%9B%D0%BE%D0%BA%D0%B0%D1%86%D0%B8%D0%B8%20%D0%A2%D1%83%D0%BD%D0%B8%D1%81%D0%B0%20-%20%D0%98%D0%BD%D1%82%D0%B5%D1%80%D0%B0%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D1%8B%D0%B9%20%D1%81%D0%BF%D1%80%D0%B0%D0%B2%D0%BE%D1%87%D0%BD%D0%B8%D0%BA_files/locations-data.js"></script>
+    
+    <script>
+        // Маппинг названий локаций из маршрута к ID локаций
+        const locationNameMapping = {
+            "Медина Туниса": "Тунис - Медина",
+            "Музей Бардо": "Музей Бардо",
+            "Карфаген": "Карфаген - руины",
+            "Сиди-Бу-Саид": "Сиди-Бу-Саид",
+            "Озеро Ичкюль (ЮНЕСКО)": "Озеро Ичкюль (ЮНЕСКО)",
+            "Бизерта": "Бизерта - Старый порт",
+            "Табарка": "Табарка - Скалы и крепость",
+            "Дугга (ЮНЕСКО)": "Дугга (ЮНЕСКО)",
+            "Эль-Кеф": "Эль-Кеф - Цитадель",
+            "Озеро Шотт-эль-Джерид": "Шотт-эль-Джерид (озеро)",
+            "Шотт-эль-Джерид (озеро)": "Шотт-эль-Джерид (озеро)",
+            "Нефта": "Нефта - Оазис и Colline 73",
+            "Дом Ларсов": "Дом Ларсов (Lars Homestead)",
+            "Онг Джемель": "Онг Джемель (Мос-Эспа)",
+            "Каньон Сиди Бухлель": "Каньон Сиди Бухлель",
+            "Оазис": "Оазис Шебика",
+            "Оазисы (Мидес/Тамерза/Шебика)": "Оазис Шебика",
+            "Матмата": "Матмата - Отель Sidi Driss",
+            "Ксары": "Ксар Хаддада",
+            "Ксар Хаддада": "Ксар Хаддада",
+            "Ксар Улед Султан": "Ксар Улед Султан",
+            "Ксар Халлуф": "Ксар Халлуф",
+            "Шенини": "Шенини",
+            "Дуирет": "Дуирет",
+            "Дуз": "Дуз - Ворота Сахары",
+            "Фум-Татавин": "Татауин (город)",
+            "Синагога Эль-Гриба": "Синагога Эль-Гриба (Джерба)",
+            "Джерба - Хумт-Сук": "Джерба - Хумт-Сук",
+            "Джерба": "Джерба - Хумт-Сук",
+            "Габес": "Габес - Морской оазис",
+            "ЭЛЬ-ДЖЕМ": "Эль-Джем - Амфитеатр",
+            "Эль-Джем": "Эль-Джем - Амфитеатр",
+            "Махдия": "Махдия - Крепость и порт",
+            "Кайруан": "Кайруан - Великая мечеть",
+            "Загуан": "Загуан - Храм и акведук",
+            "Хаммамет": "Хаммамет",
+            "Набёль": "Набёль",
+            "Келибия": "Келибия - Крепость",
+            "Келибия - Крепость": "Келибия - Крепость",
+            "Керкуан": "Керкуан (пунический город)"
+        };
+        
+        // Функция для поиска локации по названию
+        function findLocationByName(name) {
+            if (typeof locations === 'undefined') return null;
+            
+            // Пробуем найти через маппинг
+            const mappedName = locationNameMapping[name] || name;
+            
+            // Точное совпадение
+            for (const loc of locations) {
+                if (loc.name === mappedName || loc.name === name) {
+                    return loc;
+                }
+            }
+            
+            // Частичное совпадение (без учета регистра)
+            const nameLower = name.toLowerCase().trim();
+            let bestMatch = null;
+            let bestScore = 0;
+            
+            for (const loc of locations) {
+                const locNameLower = loc.name.toLowerCase().trim();
+                
+                if (locNameLower === nameLower) {
+                    return loc;
+                }
+                
+                if (locNameLower.includes(nameLower) || nameLower.includes(locNameLower)) {
+                    const score = Math.min(locNameLower.length, nameLower.length) / Math.max(locNameLower.length, nameLower.length);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMatch = loc;
+                    }
+                }
+            }
+            
+            return bestMatch;
+        }
+        
+        // Функция для добавления ссылок на локации
+        function makeLocationsClickable() {
+            if (typeof locations === 'undefined') {
+                // Если данные еще не загружены, повторим попытку через 500ms
+                setTimeout(makeLocationsClickable, 500);
+                return;
+            }
+            
+            // Находим все элементы с названиями локаций в списках локаций дня
+            const locationLists = document.querySelectorAll('.day-section ul.space-y-3');
+            
+            locationLists.forEach(list => {
+                const items = list.querySelectorAll('li > div > div.font-bold.text-gray-800');
+                
+                items.forEach(el => {
+                    // Пропускаем, если уже ссылка
+                    if (el.tagName === 'A' || el.querySelector('a')) {
+                        return;
+                    }
+                    
+                    let locationName = el.textContent.trim();
+                    
+                    // Убираем эмодзи и рейтинги
+                    locationName = locationName.replace(/⭐+/g, '').replace(/🎬/g, '').trim();
+                    
+                    // Пропускаем элементы, которые не являются локациями
+                    if (locationName.includes('День') || locationName.match(/^\d+/) || locationName.length < 3) {
+                        return;
+                    }
+                    
+                    const location = findLocationByName(locationName);
+                    
+                    if (location) {
+                        // Сохраняем исходный текст с рейтингами
+                        const originalText = el.textContent.trim();
+                        
+                        // Создаем ссылку
+                        const link = document.createElement('a');
+                        link.href = `location.html?id=${location.id}`;
+                        link.className = 'location-link';
+                        link.innerHTML = originalText;
+                        link.title = `Подробнее о ${location.name}`;
+                        
+                        // Заменяем содержимое на ссылку
+                        el.innerHTML = '';
+                        el.appendChild(link);
+                    }
+                });
+            });
+        }
+        
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Back to top button
+        const backToTopBtn = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Делаем локации кликабельными после загрузки
+        document.addEventListener('DOMContentLoaded', () => {
+            makeLocationsClickable();
+        });
+        
+        // Повторяем попытку, если данные загружаются асинхронно
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', makeLocationsClickable);
+        } else {
+            setTimeout(makeLocationsClickable, 100);
+        }
+    </script>
+</body>
+</html>
+
