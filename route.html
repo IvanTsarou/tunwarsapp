@@ -933,7 +933,77 @@
             document.querySelectorAll('.fade-in').forEach(el => {
                 observer.observe(el);
             });
+            
+            // Настройка кеширования тайлов после инициализации карты
+            setupRouteMapTileCaching(map);
         });
+        
+        // Настройка кеширования тайлов Leaflet для офлайн-работы (route page)
+        function setupRouteMapTileCaching(mapInstance) {
+            if (!('serviceWorker' in navigator)) {
+                return;
+            }
+            
+            let lastCacheTime = 0;
+            const CACHE_DELAY = 2000;
+            
+            mapInstance.on('moveend zoomend', () => {
+                const now = Date.now();
+                if (now - lastCacheTime < CACHE_DELAY) {
+                    return;
+                }
+                
+                lastCacheTime = now;
+                const bounds = mapInstance.getBounds();
+                const zoom = mapInstance.getZoom();
+                
+                if (navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({
+                        type: 'CACHE_TILES',
+                        bounds: {
+                            north: bounds.getNorth(),
+                            south: bounds.getSouth(),
+                            east: bounds.getEast(),
+                            west: bounds.getWest()
+                        },
+                        zoom: zoom
+                    });
+                }
+            });
+            
+            setTimeout(() => {
+                const bounds = mapInstance.getBounds();
+                const zoom = mapInstance.getZoom();
+                
+                if (navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({
+                        type: 'CACHE_TILES',
+                        bounds: {
+                            north: bounds.getNorth(),
+                            south: bounds.getSouth(),
+                            east: bounds.getEast(),
+                            west: bounds.getWest()
+                        },
+                        zoom: zoom
+                    });
+                }
+            }, 1000);
+        }
+    </script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('✅ Service Worker зарегистрирован:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('❌ Ошибка регистрации Service Worker:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>

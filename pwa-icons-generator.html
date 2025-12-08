@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор иконок PWA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .icon-preview {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        canvas {
+            border: 1px solid #ddd;
+            background: #667eea;
+            display: block;
+            margin: 10px auto;
+        }
+        .download-link {
+            display: block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Генератор иконок PWA для TunWars App</h1>
+    <p>Эта страница создаст иконки всех необходимых размеров. Кликните на ссылки для скачивания.</p>
+    
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const container = document.body;
+        
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // Фон градиент
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(0.5, '#764ba2');
+            gradient.addColorStop(1, '#f093fb');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Иконка карты/компаса (простая стилизация)
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = size / 20;
+            
+            // Рисуем простую карту
+            const centerX = size / 2;
+            const centerY = size / 2;
+            const radius = size / 3;
+            
+            // Внешний круг (компас)
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Внутренний круг
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius * 0.7, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            // Крест (север-юг-восток-запад)
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - radius);
+            ctx.lineTo(centerX, centerY + radius);
+            ctx.moveTo(centerX - radius, centerY);
+            ctx.lineTo(centerX + radius, centerY);
+            ctx.stroke();
+            
+            // Точка в центре
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, size / 25, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Звезда (для Звёздных войн)
+            const starSize = size / 6;
+            drawStar(ctx, centerX, centerY - radius * 0.3, 5, starSize / 2, starSize / 4);
+            
+            // Создаем контейнер для предпросмотра
+            const div = document.createElement('div');
+            div.className = 'icon-preview';
+            
+            const label = document.createElement('div');
+            label.textContent = `${size}x${size}`;
+            label.style.marginBottom = '5px';
+            label.style.fontWeight = 'bold';
+            
+            const downloadLink = document.createElement('a');
+            downloadLink.href = canvas.toDataURL('image/png');
+            downloadLink.download = `icon-${size}x${size}.png`;
+            downloadLink.className = 'download-link';
+            downloadLink.textContent = 'Скачать PNG';
+            
+            div.appendChild(label);
+            div.appendChild(canvas);
+            div.appendChild(downloadLink);
+            
+            container.appendChild(div);
+        }
+        
+        function drawStar(ctx, x, y, points, outerRadius, innerRadius) {
+            ctx.save();
+            ctx.fillStyle = '#FFE81F';
+            ctx.beginPath();
+            for (let i = 0; i < points * 2; i++) {
+                const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                const angle = (i * Math.PI) / points - Math.PI / 2;
+                const px = x + radius * Math.cos(angle);
+                const py = y + radius * Math.sin(angle);
+                if (i === 0) {
+                    ctx.moveTo(px, py);
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+        
+        // Создаем все иконки
+        sizes.forEach(createIcon);
+    </script>
+</body>
+</html>
+

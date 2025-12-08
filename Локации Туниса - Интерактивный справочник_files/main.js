@@ -66,6 +66,68 @@ function initMap() {
     if (typeof locations !== 'undefined' && locations) {
         addMarkersToMap();
     }
+    
+    // Кеширование тайлов для PWA (кешируем при первом просмотре)
+    setupTileCaching();
+}
+
+// Настройка кеширования тайлов Leaflet для офлайн-работы
+function setupTileCaching() {
+    if (!('serviceWorker' in navigator)) {
+        return; // Service Worker не поддерживается
+    }
+    
+    let lastCacheTime = 0;
+    const CACHE_DELAY = 2000; // Кешируем тайлы через 2 секунды после изменения карты
+    
+    // Кешируем тайлы после движения/зума карты
+    map.on('moveend zoomend', () => {
+        const now = Date.now();
+        
+        // Ограничиваем частоту запросов на кеширование
+        if (now - lastCacheTime < CACHE_DELAY) {
+            return;
+        }
+        
+        lastCacheTime = now;
+        
+        // Получаем границы видимой области
+        const bounds = map.getBounds();
+        const zoom = map.getZoom();
+        
+        // Отправляем запрос Service Worker для кеширования тайлов
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'CACHE_TILES',
+                bounds: {
+                    north: bounds.getNorth(),
+                    south: bounds.getSouth(),
+                    east: bounds.getEast(),
+                    west: bounds.getWest()
+                },
+                zoom: zoom
+            });
+        }
+    });
+    
+    // Кешируем тайлы при первом открытии карты
+    setTimeout(() => {
+        const bounds = map.getBounds();
+        const zoom = map.getZoom();
+        
+        if (navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'CACHE_TILES',
+                bounds: {
+                    north: bounds.getNorth(),
+                    south: bounds.getSouth(),
+                    east: bounds.getEast(),
+                    west: bounds.getWest()
+                },
+                zoom: zoom
+            });
+        }
+    }, 1000);
 }
 
 // Добавление маркеров на карту
