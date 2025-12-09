@@ -1,8 +1,9 @@
 {
   "name": "TunWars App: Episode I - Тунисская угроза",
-  "short_name": "TunWars App",
+  "short_name": "TunWars",
   "description": "PWA-версия путеводителя по Тунису и локациям Звёздных войн. Работает офлайн!",
-  "start_url": "/",
+  "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#667eea",

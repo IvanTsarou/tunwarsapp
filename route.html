@@ -9,6 +9,10 @@
     <meta name="apple-mobile-web-app-title" content="TunWars">
     <title>Маршрут по Тунису - Визуализация</title>
     <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/icon-128x128.png">
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     
     <!-- Leaflet CSS -->
@@ -1054,15 +1058,15 @@
     <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                        console.log('✅ Service Worker зарегистрирован:', registration.scope);
-                    })
-                    .catch((error) => {
-                        console.error('❌ Ошибка регистрации Service Worker:', error);
-                    });
-            });
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then((registration) => {
+                    console.log('✅ Service Worker зарегистрирован:', registration.scope);
+                })
+                .catch((error) => {
+                    console.error('❌ Ошибка регистрации Service Worker:', error);
+                });
+        } else {
+            console.warn('⚠️ Service Worker не поддерживается в этом браузере');
         }
     </script>
 </body>

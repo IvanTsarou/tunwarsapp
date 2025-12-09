@@ -13,6 +13,10 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     <title>TunWars: Episode I - Тунисская угроза</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗺️</text></svg>">
     <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/icon-128x128.png">
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     
     <!-- Tailwind CSS -->
@@ -516,20 +520,21 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     <!-- Service Worker Registration -->
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                        console.log('✅ Service Worker зарегистрирован:', registration.scope);
-                        
-                        // Проверка обновлений каждые 60 секунд
-                        setInterval(() => {
-                            registration.update();
-                        }, 60000);
-                    })
-                    .catch((error) => {
-                        console.error('❌ Ошибка регистрации Service Worker:', error);
-                    });
-            });
+            // Регистрируем сразу, не ждем load для лучшей поддержки iOS
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then((registration) => {
+                    console.log('✅ Service Worker зарегистрирован:', registration.scope);
+                    
+                    // Проверка обновлений каждые 60 секунд
+                    setInterval(() => {
+                        registration.update();
+                    }, 60000);
+                })
+                .catch((error) => {
+                    console.error('❌ Ошибка регистрации Service Worker:', error);
+                });
+        } else {
+            console.warn('⚠️ Service Worker не поддерживается в этом браузере');
         }
     </script>
 
