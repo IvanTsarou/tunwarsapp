@@ -71,8 +71,17 @@ self.addEventListener('activate', (event) => {
       })
       .then(() => {
         console.log('[SW] Service Worker activated');
-        // Берем контроль над всеми страницами
-        return self.clients.claim();
+        // Берем контроль над всеми страницами сразу
+        // Это критически важно для iOS PWA
+        return self.clients.claim().then(() => {
+          console.log('[SW] Service Worker взял контроль над клиентами');
+          // Уведомляем клиентов о готовности
+          return self.clients.matchAll().then(clients => {
+            clients.forEach(client => {
+              client.postMessage({ type: 'SW_ACTIVATED' });
+            });
+          });
+        });
       })
   );
 });
