@@ -519,11 +519,17 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     
     <!-- Service Worker Registration -->
     <script>
+        // Проверка поддержки PWA
+        console.log('🔍 Проверка поддержки PWA...');
+        console.log('Service Worker поддержка:', 'serviceWorker' in navigator);
+        console.log('Manifest:', document.querySelector('link[rel="manifest"]')?.href);
+        
         if ('serviceWorker' in navigator) {
             // Регистрируем сразу, не ждем load для лучшей поддержки iOS
             navigator.serviceWorker.register('/sw.js', { scope: '/' })
                 .then((registration) => {
                     console.log('✅ Service Worker зарегистрирован:', registration.scope);
+                    console.log('✅ PWA готово к установке!');
                     
                     // Проверка обновлений каждые 60 секунд
                     setInterval(() => {
@@ -532,10 +538,30 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
                 })
                 .catch((error) => {
                     console.error('❌ Ошибка регистрации Service Worker:', error);
+                    console.error('Детали ошибки:', error.message);
                 });
         } else {
             console.warn('⚠️ Service Worker не поддерживается в этом браузере');
         }
+        
+        // Проверка manifest.json
+        fetch('/manifest.json')
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ manifest.json доступен');
+                    return response.json();
+                } else {
+                    console.error('❌ manifest.json недоступен:', response.status);
+                }
+            })
+            .then(manifest => {
+                if (manifest) {
+                    console.log('✅ Manifest загружен:', manifest.name);
+                }
+            })
+            .catch(error => {
+                console.error('❌ Ошибка загрузки manifest.json:', error);
+            });
     </script>
 
 
