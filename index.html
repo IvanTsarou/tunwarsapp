@@ -595,6 +595,55 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
             console.log('  - apple-mobile-web-app-capable:', appleCapable?.content);
             console.log('  - apple-mobile-web-app-title:', appleTitle?.content);
             console.log('  - apple-touch-icon:', appleIcon?.href);
+            
+            // Проверка готовности PWA для iOS
+            function checkPWAReadiness() {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                const hasServiceWorker = 'serviceWorker' in navigator;
+                const hasManifest = document.querySelector('link[rel="manifest"]');
+                
+                if (isIOS && hasServiceWorker && hasManifest) {
+                    // Проверяем, что Service Worker активен
+                    navigator.serviceWorker.ready.then(registration => {
+                        if (registration.active) {
+                            console.log('✅✅✅ PWA полностью готово к установке на iOS!');
+                            console.log('📱 Инструкция: Нажмите кнопку "Поделиться" → "На экран «Домой»"');
+                            
+                            // Показываем подсказку пользователю (только на мобильных)
+                            if (window.innerWidth <= 768) {
+                                setTimeout(() => {
+                                    const banner = document.createElement('div');
+                                    banner.style.cssText = 'position: fixed; bottom: 20px; left: 20px; right: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 10000; font-family: -apple-system, BlinkMacSystemFont, sans-serif;';
+                                    banner.innerHTML = `
+                                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                                            <div>
+                                                <div style="font-weight: bold; margin-bottom: 4px;">📱 Установить приложение</div>
+                                                <div style="font-size: 14px; opacity: 0.9;">Нажмите "Поделиться" → "На экран «Домой»"</div>
+                                            </div>
+                                            <button onclick="this.parentElement.parentElement.remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 18px; cursor: pointer;">×</button>
+                                        </div>
+                                    `;
+                                    document.body.appendChild(banner);
+                                    
+                                    // Автоматически скрываем через 10 секунд
+                                    setTimeout(() => {
+                                        if (banner.parentElement) {
+                                            banner.style.transition = 'opacity 0.3s';
+                                            banner.style.opacity = '0';
+                                            setTimeout(() => banner.remove(), 300);
+                                        }
+                                    }, 10000);
+                                }, 2000);
+                            }
+                        }
+                    }).catch(err => {
+                        console.warn('⚠️ Service Worker еще не готов:', err);
+                    });
+                }
+            }
+            
+            // Проверяем готовность через 3 секунды после загрузки
+            setTimeout(checkPWAReadiness, 3000);
         })();
     </script>
 
