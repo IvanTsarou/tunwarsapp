@@ -519,49 +519,83 @@ body[unresolved] {opacity: 0; display: block; overflow: hidden; position: relati
     
     <!-- Service Worker Registration -->
     <script>
-        // Проверка поддержки PWA
-        console.log('🔍 Проверка поддержки PWA...');
-        console.log('Service Worker поддержка:', 'serviceWorker' in navigator);
-        console.log('Manifest:', document.querySelector('link[rel="manifest"]')?.href);
-        
-        if ('serviceWorker' in navigator) {
-            // Регистрируем сразу, не ждем load для лучшей поддержки iOS
-            navigator.serviceWorker.register('/sw.js', { scope: '/' })
-                .then((registration) => {
-                    console.log('✅ Service Worker зарегистрирован:', registration.scope);
-                    console.log('✅ PWA готово к установке!');
-                    
-                    // Проверка обновлений каждые 60 секунд
-                    setInterval(() => {
-                        registration.update();
-                    }, 60000);
+        // Критически важно для iOS: регистрируем Service Worker ДО загрузки страницы
+        (function() {
+            // Проверка поддержки PWA
+            console.log('🔍 Проверка поддержки PWA...');
+            console.log('Service Worker поддержка:', 'serviceWorker' in navigator);
+            console.log('Manifest:', document.querySelector('link[rel="manifest"]')?.href);
+            console.log('URL:', window.location.href);
+            console.log('HTTPS:', window.location.protocol === 'https:');
+            
+            if ('serviceWorker' in navigator) {
+                // Регистрируем СРАЗУ, не ждем ничего
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then((registration) => {
+                        console.log('✅ Service Worker зарегистрирован:', registration.scope);
+                        console.log('✅ Registration active:', registration.active);
+                        console.log('✅ Registration installing:', registration.installing);
+                        console.log('✅ Registration waiting:', registration.waiting);
+                        
+                        // Ждем активации
+                        if (registration.installing) {
+                            registration.installing.addEventListener('statechange', function() {
+                                if (this.state === 'activated') {
+                                    console.log('✅ Service Worker активирован!');
+                                    console.log('✅ PWA готово к установке на iOS!');
+                                }
+                            });
+                        } else if (registration.active) {
+                            console.log('✅ Service Worker уже активен!');
+                            console.log('✅ PWA готово к установке на iOS!');
+                        }
+                        
+                        // Проверка обновлений каждые 60 секунд
+                        setInterval(() => {
+                            registration.update();
+                        }, 60000);
+                    })
+                    .catch((error) => {
+                        console.error('❌ Ошибка регистрации Service Worker:', error);
+                        console.error('Детали ошибки:', error.message);
+                        console.error('Stack:', error.stack);
+                    });
+            } else {
+                console.warn('⚠️ Service Worker не поддерживается в этом браузере');
+            }
+            
+            // Проверка manifest.json
+            fetch('/manifest.json')
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ manifest.json доступен');
+                        return response.json();
+                    } else {
+                        console.error('❌ manifest.json недоступен:', response.status);
+                    }
                 })
-                .catch((error) => {
-                    console.error('❌ Ошибка регистрации Service Worker:', error);
-                    console.error('Детали ошибки:', error.message);
+                .then(manifest => {
+                    if (manifest) {
+                        console.log('✅ Manifest загружен:', manifest.name);
+                        console.log('✅ Display mode:', manifest.display);
+                        console.log('✅ Start URL:', manifest.start_url);
+                        console.log('✅ Icons count:', manifest.icons?.length || 0);
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Ошибка загрузки manifest.json:', error);
                 });
-        } else {
-            console.warn('⚠️ Service Worker не поддерживается в этом браузере');
-        }
-        
-        // Проверка manifest.json
-        fetch('/manifest.json')
-            .then(response => {
-                if (response.ok) {
-                    console.log('✅ manifest.json доступен');
-                    return response.json();
-                } else {
-                    console.error('❌ manifest.json недоступен:', response.status);
-                }
-            })
-            .then(manifest => {
-                if (manifest) {
-                    console.log('✅ Manifest загружен:', manifest.name);
-                }
-            })
-            .catch(error => {
-                console.error('❌ Ошибка загрузки manifest.json:', error);
-            });
+            
+            // Проверка мета-тегов для iOS
+            const appleCapable = document.querySelector('meta[name="apple-mobile-web-app-capable"]');
+            const appleTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+            const appleIcon = document.querySelector('link[rel="apple-touch-icon"]');
+            
+            console.log('🍎 iOS мета-теги:');
+            console.log('  - apple-mobile-web-app-capable:', appleCapable?.content);
+            console.log('  - apple-mobile-web-app-title:', appleTitle?.content);
+            console.log('  - apple-touch-icon:', appleIcon?.href);
+        })();
     </script>
 
 

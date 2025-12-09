@@ -39,7 +39,12 @@ self.addEventListener('install', (event) => {
       .then(() => {
         console.log('[SW] Service Worker installed');
         // Активируем сразу, не дожидаясь закрытия всех вкладок
-        return self.skipWaiting();
+        // Это критически важно для iOS PWA
+        return self.skipWaiting().then(() => {
+          console.log('[SW] Service Worker активирован через skipWaiting');
+          // Уведомляем все клиенты о новой версии
+          return self.clients.claim();
+        });
       })
   );
 });
@@ -47,6 +52,7 @@ self.addEventListener('install', (event) => {
 // Активация Service Worker
 self.addEventListener('activate', (event) => {
   console.log('[SW] Activating Service Worker...');
+  console.log('[SW] Клиенты:', self.clients);
   
   event.waitUntil(
     caches.keys()
